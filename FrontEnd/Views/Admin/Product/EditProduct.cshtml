@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "Admin Product Page";
+    Layout = "_LayoutAdmin";
+}
+@model FrontEnd.Models.Product
+<div class="content-wrapper">
+    <div class="text-center">
+        <h1 class="display-4 text-left ml-4">Update Product</h1>
+        <form action="/admin/products/updated/@Model.id" class="text-left p-4" method="post">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name Product</label>
+                <input type="text" class="form-control" id="name" name="name" value="@Model.name" aria-describedby="nameHelp">
+                <div id="nameHelp" class="form-text"></div>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price Product</label>
+                <input type="number" class="form-control" id="price" name="price" value="@Model.price" step="0.1" aria-describedby="priceHelp">
+                <div id="priceHelp" class="form-text"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
