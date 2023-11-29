@@ -21,11 +21,18 @@ public class AdminController : Controller {
     //[GET] /admin/products
     public IActionResult Products()
     {
-        var url = "http://localhost:8080";
-        var urlbase = "/api/products";
-        var contentJson = FetchApi.FetchGet(url, urlbase);
-        var products = JsonConvert.DeserializeObject<List<Product>>(contentJson);
-        return View("Product/products", products);
+        try
+        {
+            var url = "http://localhost:8080";
+            var urlbase = "/api/products";
+            var contentJson = FetchApi.FetchGet(url, urlbase);
+            var products = JsonConvert.DeserializeObject<List<Product>>(contentJson);
+            return View("Product/products", products);
+        }
+        catch (System.Exception)
+        {
+            return View("Product/products", new List<Product>());
+        }
     }
 
     //[GET] /admin/products/create

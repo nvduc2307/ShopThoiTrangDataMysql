@@ -17,5 +17,6 @@ public class MainDbContext : DbContext {
     }
     //config dbset
     public DbSet<ProductEntity> products {get; set;}
+    public DbSet<UserEntity> users {get; set;}
     
 }

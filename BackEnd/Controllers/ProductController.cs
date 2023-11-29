@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShopThoiTrang.BackEnd.Entities;
 using ShopThoiTrang.BackEnd.UnitOfWorks;
 
-namespace BackEnd.Controllers;
+namespace ShopThoiTrang.BackEnd.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -19,9 +19,14 @@ public class ProductController : ControllerBase
 
     [Route("/api/products/create")]
     [HttpPost]
-    public async Task<ProductEntity> CreateProduct(ProductEntity product) {
-        var productCreate = await _unitOfWork.IProductRepository.CreateProduct(product);
-        return productCreate;
+    public async Task<int> CreateProduct(ProductEntity product) {
+        var result = -1;
+        var products = await _unitOfWork.IProductRepository.FetchData();
+        var isExisted = products.Any(x=>x.Name == product.Name);
+        if(!isExisted) {
+            result = await _unitOfWork.IProductRepository.Create(product);
+        }
+        return result;
     }
 
     [Route("/api/products")]

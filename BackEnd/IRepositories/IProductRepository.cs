@@ -3,7 +3,7 @@ using ShopThoiTrang.BackEnd.Entities;
 
 namespace ShopThoiTrang.BackEnd.IRepositories;
 
-public interface IProductRepository {
+public interface IProductRepository : IGenericRepository<ProductEntity> {
     Task<List<ProductEntity>> GetProducts();
     Task<ProductEntity> CreateProduct(ProductEntity productEntity);
     Task<ProductEntity> DeleteProduct(int productEntityId);

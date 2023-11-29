@@ -4,20 +4,20 @@ using ShopThoiTrang.BackEnd.IRepositories;
 
 namespace ShopThoiTrang.BackEnd.Repositories;
 
-public class ProductRepository : IProductRepository
+public class ProductRepository : GenericRepository<ProductEntity>, IProductRepository
 {
-    private MainDbContext _mainDbContext;
-    public ProductRepository(MainDbContext mainDbContext)
+    private MainDbContext dbContext;
+    public ProductRepository(MainDbContext dbContext) : base(dbContext)
     {
-        _mainDbContext = mainDbContext;
     }
+
     public async Task<ProductEntity> CreateProduct(ProductEntity productEntity)
     {
-        var products = _mainDbContext.products;
+        var products = dbContext.products;
         var isExisted = products.Any(x => x.Name == productEntity.Name);
         if(!isExisted) {
             products.Add(productEntity);
-            _mainDbContext.SaveChanges();
+            dbContext.SaveChanges();
             return productEntity;
         } else
         {
@@ -27,13 +27,13 @@ public class ProductRepository : IProductRepository
 
     public async Task<ProductEntity> DeleteProduct(int productEntityId)
     {
-        var products = _mainDbContext.products;
+        var products = dbContext.products;
         var isExisted = products.Any(x => x.Id == productEntityId);
         if (isExisted)
         {
             var product = products.First(x => x.Id == productEntityId);
             products.Remove(product);
-            _mainDbContext.SaveChanges();
+            dbContext.SaveChanges();
             return product;
         }
         return null;
@@ -51,7 +51,7 @@ public class ProductRepository : IProductRepository
 
     public async Task<List<ProductEntity>> GetProducts()
     {
-        var products = _mainDbContext.products.ToList();
+        var products = dbContext.products.ToList();
         return  products;
     }
 
@@ -62,7 +62,7 @@ public class ProductRepository : IProductRepository
 
     public async Task<ProductEntity> UpDateProduct(int productEntityId, ProductEntity productEntityUpdate)
     {
-        var products = _mainDbContext.products;
+        var products = dbContext.products;
         var isExisted = products.Any(x => x.Id == productEntityId);
         if (isExisted)
         {
@@ -70,7 +70,7 @@ public class ProductRepository : IProductRepository
             product.Name = productEntityUpdate.Name;
             product.Price = productEntityUpdate.Price;
             products.Update(product);
-            _mainDbContext.SaveChanges();
+            dbContext.SaveChanges();
             return product;
         }
         return null;

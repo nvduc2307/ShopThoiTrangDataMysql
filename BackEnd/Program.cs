@@ -3,12 +3,13 @@ using ShopThoiTrang.BackEnd.Databases;
 using ShopThoiTrang.BackEnd.IRepositories;
 using ShopThoiTrang.BackEnd.Repositories;
 using ShopThoiTrang.BackEnd.UnitOfWorks;
+using ShopThoiTrang.BackEnd.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var connectionstring = configuration.GetConnectionString("mysql");
 // Add services to the container.
-
+builder.ConfigAuthentication(configuration);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<MainDbContext>(options => {
 });
 
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
@@ -30,6 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
