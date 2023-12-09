@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ShopThoiTrang.BackEnd.Entities;
 using ShopThoiTrang.BackEnd.UnitOfWorks;
@@ -20,33 +21,90 @@ public class ProductController : ControllerBase
     [Route("/api/products/create")]
     [HttpPost]
     public async Task<int> CreateProduct(ProductEntity product) {
-        var result = -1;
-        var products = await _unitOfWork.IProductRepository.FetchData();
-        var isExisted = products.Any(x=>x.Name == product.Name);
-        if(!isExisted) {
-            result = await _unitOfWork.IProductRepository.Create(product);
+        try
+        {
+            var result = 0;
+            var products = await _unitOfWork.IProductRepository.FetchData();
+            var isExisted = products.Any(x=>x.Name == product.Name);
+            if(!isExisted) {
+                result = await _unitOfWork.IProductRepository.Create(product);
+            }
+            return result;
         }
-        return result;
+        catch (Exception ex)
+        {
+            
+            throw;
+        }
     }
 
     [Route("/api/products")]
     [HttpGet]
     public async Task<List<ProductEntity>> GetProducts() {
-        var products = await _unitOfWork.IProductRepository.GetProducts();
-        return products;
+        try
+        {
+            var products = await _unitOfWork.IProductRepository.FetchData();
+            return products;
+        }
+        catch (Exception ex)
+        {
+            
+            throw;
+        }
     }
 
-    [Route("/api/products/delete")]
+    [Route("/api/products/delete/{id}")]
     [HttpDelete]
-    public async Task<ProductEntity> DeleteProduct(int IdProduct) {
-        var product = await _unitOfWork.IProductRepository.DeleteProduct(IdProduct);
-        return product;
+    public async Task<int> DeleteProduct(int id) {
+        try
+        {
+            var result = 0;
+            var product = await _unitOfWork.IProductRepository.GetProductById(id);
+            if(product != null) {
+                result = await _unitOfWork.IProductRepository.Delete(product);
+            }
+            return result;
+        }
+        catch (Exception ex)
+        {
+            
+            throw;
+        }
     }
 
     [Route("/api/products/update/{id}")]
     [HttpPut] 
-    public async Task<ProductEntity> UpdateProduct(int id, ProductEntity newProduct) {
-        var product = await _unitOfWork.IProductRepository.UpDateProduct(id, newProduct);
-        return product;
+    public async Task<int> UpdateProduct(int id, ProductEntity newProduct) {
+        try
+        {
+            var result = 0;
+            var product = await _unitOfWork.IProductRepository.GetProductById(id);
+            if(product != null) {
+                product.Name = newProduct.Name;
+                product.Price = newProduct.Price;
+                result = await _unitOfWork.IProductRepository.Update(product);
+            }
+            return result;
+        }
+        catch (Exception ex)
+        {
+            
+            throw;
+        }
+    }
+
+    [Route("/api/products/{id}")]
+    [HttpGet] 
+    public async Task<ProductEntity> FindProductById(int id) {
+        try
+        {
+            var product = await _unitOfWork.IProductRepository.GetProductById(id);
+            return product;
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+        
     }
 }

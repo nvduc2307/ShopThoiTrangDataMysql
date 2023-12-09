@@ -27,14 +27,18 @@
                             <td>@product.price</td>
                             <td>
                                 <a href="/admin/products/edit/@product.id" class="btn btn-primary">Edit</a>
-                                <a href="/admin/products/edit/@product.id" class="btn btn-danger">Delete</a>
+                                <a data-id="@product.id" class="btn btn-danger btn-delete-product">Delete</a>
                             </td>
                         </tr>
                     }
                 }else {
-
+                    <tr>
+                        <td>Danh sach trong</td>
+                    </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
+<form name="form-product-submit" method="post"></form>
+<script src="/js/products.js"></script>

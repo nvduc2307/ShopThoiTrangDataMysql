@@ -4,13 +4,15 @@ using ShopThoiTrang.BackEnd.Entities;
 using ShopThoiTrang.BackEnd.IRepositories;
 
 namespace ShopThoiTrang.BackEnd.Repositories;
-public class UserRepository : IUserRepository
+public class UserRepository : GenericRepository<UserEntity>, IUserRepository
 {
     private MainDbContext _dbContext;
-    public UserRepository(MainDbContext dbContext)
+
+    public UserRepository(MainDbContext dbContext) : base(dbContext)
     {
         _dbContext = dbContext;
     }
+
     public async Task<List<UserEntity>> GetUsers()
     {
         var users = _dbContext.users.ToList();
