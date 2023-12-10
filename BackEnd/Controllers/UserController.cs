@@ -41,11 +41,7 @@ public class UserController : ControllerBase {
                 new Claim(ClaimTypes.Upn, user.Password),
             };
             token = GenerateJWT.CreateJwtToken(claims, _configuration);
-        } else
-        {
-            token = "-1";
         }
-        
         return token;
     }
 }

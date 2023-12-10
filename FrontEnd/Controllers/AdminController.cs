@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using FrontEnd.Databases;
 using FrontEnd.Models;
+using FrontEnd.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -16,6 +17,26 @@ public class AdminController : Controller {
         _configuration = configuration;
         _urlHost = _configuration["UrlHost"] ?? "http://localhost:8080";
     }
+
+    //[GET] /admin/account/login
+    [Route("/admin/account/login")]
+    public IActionResult Login() {
+        return View("Account/Login");
+    }
+    [HttpPost]
+    [Route("/admin/account/signin")]
+    public IActionResult SignIn(LogginInfo logginInfo) {
+        var urlbase = "/api/users/login";
+        var body = JsonConvert.SerializeObject(logginInfo);
+        var token = FetchApi.FetchPost(_urlHost, urlbase, body);
+        if(!string.IsNullOrEmpty(token)) {
+            this.SetCookie(token);
+            return this.Redirect("/admin");
+        }else {
+            return this.Redirect("/admin/account/login");
+        }
+    }
+
     //[GET] /admin
     public IActionResult Index()
     {
@@ -29,13 +50,19 @@ public class AdminController : Controller {
         {
             var url =_urlHost;
             var urlbase = "/api/products";
-            var contentJson = FetchApi.FetchGet(url, urlbase);
-            var products = JsonConvert.DeserializeObject<List<Product>>(contentJson);
-            return View("Product/products", products);
+            var token = this.GetCookie();
+            if(!string.IsNullOrEmpty(token)) {
+                var contentJson = FetchApi.FetchGet_WithToken(url, urlbase, token);
+                var products = JsonConvert.DeserializeObject<List<Product>>(contentJson);
+                return View("Product/products", products);
+            }
+            else {
+                return this.Redirect("/admin/account/login");
+            }
         }
         catch (System.Exception)
         {
-            return View("Product/products", new List<Product>());
+            return this.Redirect("/admin/account/login");
         }
     }
 

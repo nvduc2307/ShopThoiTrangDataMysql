@@ -1,7 +1,9 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using ShopThoiTrang.BackEnd.Entities;
 using ShopThoiTrang.BackEnd.UnitOfWorks;
+using ShopThoiTrang.BackEnd.Utils;
 
 namespace ShopThoiTrang.BackEnd.Controllers;
 
@@ -40,11 +42,15 @@ public class ProductController : ControllerBase
 
     [Route("/api/products")]
     [HttpGet]
-    public async Task<List<ProductEntity>> GetProducts() {
+    public async Task<ActionResult> GetProducts() {
         try
         {
-            var products = await _unitOfWork.IProductRepository.FetchData();
-            return products;
+            var currentUser = this.CheckCurrentuser();
+            if(currentUser != null) {
+                var products = await _unitOfWork.IProductRepository.FetchData();
+                return Ok(products);
+            }
+            return Ok(new {code = -1, message = "vui long dang nhap"});
         }
         catch (Exception ex)
         {

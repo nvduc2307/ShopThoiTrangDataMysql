@@ -20,6 +20,25 @@ public static class FetchApi {
         }
     }
 
+    public static string FetchGet_WithToken(string url, string urlBase, string token) {
+        try
+        {
+            var options = new RestClientOptions(url) {
+                MaxTimeout = -1,
+            };
+            var client = new RestClient(options);
+            var request = new RestRequest(urlBase, Method.Get);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Authorization", $"Bearer {token}");
+            var response = client.ExecuteAsync(request).Result;
+            return response.Content;
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
     public  static string FetchPost(string url, string urlBase, string dataJson, Method method = Method.Post) {
         try
         {

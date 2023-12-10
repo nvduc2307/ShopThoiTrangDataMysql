@@ -1,2 +1,6 @@
+.login-form {
+  margin: 100px auto;
+  width: 400px; }
+
 .table td, .table th {
   vertical-align: text-bottom; }
